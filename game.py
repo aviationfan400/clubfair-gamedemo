@@ -1,18 +1,11 @@
-"""Fullscreen Pygame survival game driven by an ESP32 on COM3."""
-
 import argparse
 import math
-
 import pygame
-
 from controller import SerialController, joystick_vector
 from arena import (Arena, BULLET_RADIUS, CHARACTER_RADIUS, ENEMY_RADIUS,
                    BLUE_EXPLOSION_RADIUS, EXPLOSION_DURATION)
 
-
 class GameSession:
-    """Keep menu presses separate from healing during an active run."""
-
     def __init__(self, width, height):
         self.width, self.height = width, height
         self.arena = Arena(width, height)
@@ -42,14 +35,6 @@ def read_arguments() -> argparse.Namespace:
     parser.add_argument("--invert-left-y", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--invert-right-y", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--windowed", action="store_true", help="Use a 1280 x 720 window")
-    args = parser.parse_args()
-    if not 0 < args.center < args.maximum:
-        parser.error("Calibration must satisfy 0 < center < maximum")
-    if not 0 <= args.deadzone < 1:
-        parser.error("Dead zone must be at least 0 and less than 1")
-    if args.baud <= 0:
-        parser.error("Baud rate must be positive")
-    return args
 
 
 def draw_character(screen: pygame.Surface, position: pygame.Vector2, angle: float) -> None:
@@ -73,13 +58,12 @@ def draw_intro(screen, font, title_font, connected):
         label = selected_font.render(text, True, color)
         card.blit(label, label.get_rect(center=(380, y)))
 
-    centered("ESP32 SURVIVAL", title_font, 55)
+    centered("CODING CLUB DEMO GAME", title_font, 55)
     centered("CONTROLS", font, 106, (170, 170, 180))
     pygame.draw.line(card, (65, 65, 75), (60, 130), (700, 130))
     rows = [
         ("Left joystick", "Move"),
         ("Right joystick", "Aim"),
-        ("Shooting", "Automatic, along the arrow"),
         ("Left button", "Pause / resume"),
         ("Right button", "Heal +2 health (3 uses)"),
         ("Esc key", "Quit"),
@@ -89,7 +73,7 @@ def draw_intro(screen, font, title_font, connected):
         card.blit(font.render(control, True, (170, 170, 180)), (85, y))
         card.blit(font.render(action, True, (255, 255, 255)), (335, y))
     centered("Press the RIGHT button to begin", font, 407, (110, 205, 255))
-    status = "After game over: right button returns here" if connected else "Waiting for controller connection..."
+    status = "Controller connected" if True else "Waiting for connection"
     centered(status, font, 450, (170, 170, 180))
     scale = min(1.0, (screen.get_width() - 24) / 760, (screen.get_height() - 24) / 500)
     if scale < 1:
@@ -137,7 +121,7 @@ def draw_game(screen, arena, font, title_font, connected):
     screen.blit(hud, (20, 20))
     message, hint = "", ""
     if arena.game_over:
-        message, hint = "GAME OVER", f"Score: {arena.score}   |   Right button: intro   |   Esc: quit"
+        message, hint = "GAME OVER", f"Score: {arena.score}   |   Right button: restart   |   Esc: quit"
     elif arena.paused:
         message, hint = "PAUSED", "Press the left button to resume"
     elif not connected:

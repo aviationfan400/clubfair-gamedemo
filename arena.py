@@ -1,13 +1,9 @@
-"""Game simulation, kept separate from serial input and drawing."""
-
 from dataclasses import dataclass, field
 import math
 import random
 from typing import Optional
-
 from pygame import Vector2
 from terrain import Boulder, Navigator, free_position, move_and_slide
-
 
 CHARACTER_RADIUS = 12
 MOVE_SPEED = 320.0
@@ -70,7 +66,7 @@ class Explosion:
 
 
 def hit_fraction(start: Vector2, end: Vector2, radius: float) -> Optional[float]:
-    """First contact along a segment relative to a circle centered at zero."""
+    # First contact along a segment relative to a circle centered at zero.
     offset = start.length_squared() - radius * radius
     if offset <= 0:
         return 0.0

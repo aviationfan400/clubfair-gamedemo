@@ -43,7 +43,7 @@ def joystick_vector(
     deadzone: float = 0.12,
     invert_y: bool = False,
 ) -> Tuple[float, float]:
-    """Normalize each side of the off-center range, then apply a radial dead zone."""
+    # Normalize each side of the off-center range, then apply a radial dead zone.
     def axis(raw: int) -> float:
         span = center if raw < center else maximum - center
         return max(-1.0, min(1.0, (raw - center) / span))
@@ -59,7 +59,7 @@ def joystick_vector(
 
 
 class SerialController:
-    """Read without blocking rendering; reconnect and stop motion on stale data."""
+    # Read without blocking rendering; reconnect and stop motion on stale data.
 
     def __init__(self, port: str = "COM3", baud: int = 115200):
         self.port = port
@@ -91,7 +91,7 @@ class SerialController:
         self.connected = False
 
     def poll(self) -> ControllerState:
-        """Pressed flags indicate rising edges collected since the previous poll."""
+        # Pressed flags indicate rising edges collected since the previous poll.
         self.button1_pressed = False
         self.button2_pressed = False
         now = time.monotonic()

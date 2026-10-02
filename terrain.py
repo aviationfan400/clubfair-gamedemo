@@ -1,17 +1,12 @@
-"""Circular terrain collision and a visibility graph for enemy detours."""
-
 from dataclasses import dataclass
 import heapq
 import math
-
 from pygame import Vector2
-
 
 @dataclass
 class Boulder:
     position: Vector2
     radius: float
-
 
 def segment_clear(start, end, boulders, clearance):
     delta = end - start
@@ -41,7 +36,6 @@ def free_position(position, radius, boulders):
 
 
 def move_and_slide(position, displacement, radius, boulders, bounds=None):
-    """Small collision steps prevent crossing rocks and allow sliding along them."""
     position = Vector2(position)
     steps = max(1, math.ceil(displacement.length() / max(1, radius * 0.5)))
     step = displacement / steps
@@ -81,7 +75,7 @@ class Navigator:
         return segment_clear(start, end, self.boulders, self.clearance)
 
     def route(self, start, goal):
-        """Find the shortest visible waypoint route, including around several rocks."""
+        # Find the shortest visible waypoint route, including around several rocks.
         goal = free_position(goal, self.clearance + 1, self.boulders)
         if self.clear(start, goal):
             return [goal]
