@@ -35,6 +35,14 @@ def read_arguments() -> argparse.Namespace:
     parser.add_argument("--invert-left-y", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--invert-right-y", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--windowed", action="store_true", help="Use a 1280 x 720 window")
+    args = parser.parse_args()
+    if not 0 < args.center < args.maximum:
+        parser.error("Calibration must satisfy 0 < center < maximum")
+    if not 0 <= args.deadzone < 1:
+        parser.error("Dead zone must be at least 0 and less than 1")
+    if args.baud <= 0:
+        parser.error("Baud rate must be positive")
+    return args
 
 
 def draw_character(screen: pygame.Surface, position: pygame.Vector2, angle: float) -> None:
